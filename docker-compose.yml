@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:13
+    env_file: .env.postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - tutorial
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  keycloak:
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    env_file: .env.keycloak
+    ports:
+      - "8443:8443"
+      - "8082:8080"
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - tutorial
+
+volumes:
+  pgdata:
+
+networks:
+  tutorial:
+    driver: bridge
